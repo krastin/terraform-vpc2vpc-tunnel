@@ -1,0 +1,8 @@
+    3  ovpn_initpki -c ec2-18-210-8-117.compute-1.amazonaws.com
+    4  sudo ovpn_initpki -c ec2-18-210-8-117.compute-1.amazonaws.com
+    5  sudo ovpn_config -E -n 8.8.8.8 -s 172.16.0.0/12 -S -u udp://ec2-18-210-8-117.compute-1.amazonaws.com:1194
+    6  ovpn_addclient -u user
+    7  sudi ovpn_addclient -u user
+    8  sudo ovpn_addclient -u user
+    9  ovpn_getclient -u user > config.ovpn
+   10  sudo ovpn_getclient -u user > config.ovpn
