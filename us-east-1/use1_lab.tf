@@ -1,6 +1,8 @@
 # prereqs: iam user for aws cli secrets; SSH key-pair for instances
 # accept EULA for openvpn https://aws.amazon.com/marketplace/server/procurement?productId=fe8020db-5343-4c43-9e65-5ed4a825c931
 
+# todo - fix up dependencies
+
 provider "aws" {
   profile    = "default"
   region     = "us-east-1"
@@ -17,72 +19,28 @@ resource "aws_vpn_gateway" "vpc1_vpn_gw" {
 }
 */
 
-resource "aws_internet_gateway" "gw_vpc1" {
-  vpc_id = "${aws_vpc.vpc1.id}"
-
-  tags = {
-    Name = "gw_vpc1"
-  }
-
-  depends_on = ["aws_vpc.vpc1"]
-}
-
-resource "aws_default_route_table" "vpc1_default_route_table" {
-  default_route_table_id = "${aws_vpc.vpc1.default_route_table_id}"
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.gw_vpc1.id}"
-  }
-
-  tags = {
-    Name = "default table"
-  }
-}
-
-resource "aws_security_group" "security_group_vpc1_allow_all" {
-  name = "allow_all"
-  description = "allow all inbound and outbound traffic"
-
-  vpc_id = "${aws_vpc.vpc1.id}"
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = {
-    Name = "allow_all"
-  }
-  
-}
-
-resource "aws_subnet" "subnet_vpc1" {
-  vpc_id            = "${aws_vpc.vpc1.id}"
-  cidr_block        = "10.100.0.0/16"
-  map_public_ip_on_launch = true
-  # availability_zone = "us-east-1"
-  depends_on = ["aws_internet_gateway.gw_vpc1"]
-}
-
 resource "aws_network_interface" "vm_vpc1_int0" {
   subnet_id   = "${aws_subnet.subnet_vpc1.id}"
   private_ips = ["10.100.0.10"]
   security_groups = ["${aws_security_group.security_group_vpc1_allow_all.id}"]
+
+  depends_on = ["aws_security_group.security_group_vpc1_allow_all", "aws_subnet.subnet_vpc1"]
 }
 
 resource "aws_network_interface" "vm_vpn_vpc1_int0" {
   subnet_id   = "${aws_subnet.subnet_vpc1.id}"
+  private_ips = ["10.100.0.250"]
+  security_groups = ["${aws_security_group.security_group_vpc1_allow_all.id}"]
+
+  depends_on = ["aws_security_group.security_group_vpc1_allow_all", "aws_subnet.subnet_vpc1"]
+}
+
+resource "aws_network_interface" "vm_openvpn_int0" {
+  subnet_id = "${aws_subnet.subnet_vpc1.id}"
   private_ips = ["10.100.0.254"]
   security_groups = ["${aws_security_group.security_group_vpc1_allow_all.id}"]
+
+  depends_on = ["aws_security_group.security_group_vpc1_allow_all"]
 }
 
 resource "aws_eip" "vm_vpc1_eip" {
@@ -97,8 +55,16 @@ resource "aws_eip" "vm_vpn_vpc1_eip" {
   vpc = true
 
   instance                  = "${aws_instance.vm_vpn_vpc1.id}"
-  associate_with_private_ip = "10.100.0.254"
+  associate_with_private_ip = "10.100.0.250"
   depends_on                = ["aws_internet_gateway.gw_vpc1"]
+}
+
+resource "aws_eip" "vm_openvpn_vpc1_eip" {
+  vpc = true
+
+  instance = "${aws_instance.vm_openvpn.id}"
+  associate_with_private_ip = "10.100.0.254"
+  depends_on = ["aws_internet_gateway.gw_vpc1"]
 }
 
 resource "aws_instance" "vm_vpc1" {
@@ -133,6 +99,45 @@ resource "aws_instance" "vm_vpn_vpc1" {
   }
 
   depends_on = ["aws_internet_gateway.gw_vpc1", "aws_vpc.vpc1"]
+
+  key_name = "default_keypair"
+}
+
+resource "aws_instance" "vm_openvpn" {
+  ami = "ami-07a8d85046c8ecc99" # openvpn access server
+  instance_type = "t2.micro"
+
+  network_interface {
+    network_interface_id = "${aws_network_interface.vm_openvpn_int0.id}"
+    device_index = 0
+  }
+
+  connection {
+     type     = "ssh"
+     user     = "openvpnas"
+  }
+
+  # todo - parametrize ssh comand variables
+  # hack for the stupid openvpn first login bash_rc invocation
+  provisioner "local-exec" {
+    command = "ssh -i /Users/krastin/.ssh/use1_default_keypair.pem -o IdentitiesOnly=yes -o StrictHostKeyChecking=no openvpnas@${aws_instance.vm_openvpn.public_ip} 'sudo touch /usr/local/openvpn_as/etc/as.conf'"
+  }
+
+  provisioner "file" {
+    source      = "scripts/openvpn_provision.sh"
+    destination = "/tmp/openvpn_provision.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/openvpn_provision.sh",
+      "sudo /tmp/openvpn_provision.sh '${aws_instance.vm_openvpn.public_dns}'",
+    ]
+  }
+
+  credit_specification {
+    cpu_credits = "unlimited"
+  }
 
   key_name = "default_keypair"
 }
