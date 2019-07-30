@@ -259,14 +259,3 @@ resource "aws_vpn_gateway_route_propagation" "vpc2_route_propagation" {
 }
 */
 
-/*
-resource "aws_customer_gateway" "customer_gw1" {
-  bgp_asn    = 65001
-  ip_address = "x.x.x.x"
-  type       = "ipsec.1"
-
-  tags = {
-    Name = "main-customer-gateway"
-  }
-}
-*/
