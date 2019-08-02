@@ -33,6 +33,8 @@ resource "aws_vpn_connection" "krastin-vpc1-vpnconn1" {
   tags = {
       Name = "krastin-vpc1-vpnconn1"
   }
+
+  depends_on = ["aws_vpn_gateway.krastin-vpc1-vpngw1"]
 }
 
 /*
