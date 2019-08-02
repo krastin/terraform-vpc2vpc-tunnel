@@ -10,11 +10,13 @@ resource "aws_vpn_gateway" "krastin-vpc1-vpngw1" {
 
 resource "aws_vpn_gateway_route_propagation" "krastin-vpc1-rp1" {
   vpn_gateway_id = "${aws_vpn_gateway.krastin-vpc1-vpngw1.id}"
-  route_table_id = "${aws_route_table.krastin-vpc1-rt1.id}"
+  route_table_id = "${aws_vpc.krastin-vpc1.default_route_table_id}"
 
   tags = {
       Name = "krastin-vpc1-rp1"
   }
+
+  depends_on = ["aws_vpn_gateway.krastin-vpc1-vpngw1", "aws_vpc.krastin-vpc1"]
 }
 
 resource "aws_customer_gateway" "krastin-vpc1-cgw1" {
