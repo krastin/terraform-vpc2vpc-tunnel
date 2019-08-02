@@ -16,7 +16,7 @@ resource "aws_internet_gateway" "krastin-vpc1-gw1" {
   }
 }
 
-resource "aws_default_route_table" "krastin-vpc1-rtable" {
+resource "aws_default_route_table" "krastin-vpc1-rt1" {
   default_route_table_id = "${aws_vpc.krastin-vpc1.default_route_table_id}"
 
   route {
@@ -25,7 +25,7 @@ resource "aws_default_route_table" "krastin-vpc1-rtable" {
   }
 
   tags = {
-    Name = "krastin-vpc1-rtable"
+    Name = "krastin-vpc1-rt1"
   }
 }
 
