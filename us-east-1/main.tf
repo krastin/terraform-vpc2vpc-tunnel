@@ -2,5 +2,5 @@
 
 provider "aws" {
   profile    = "hashi"
-  region     = "us-east-1"
+  region     = "ca-central-1"
 }

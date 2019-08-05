@@ -1,4 +1,5 @@
 variable "remote_vpn_address" {}
+variable "remote_vpn_subnet" {}
 
 resource "aws_vpn_gateway" "krastin-vpc1-vpngw1" {
   vpc_id = "${aws_vpc.krastin-vpc1.id}"
@@ -37,6 +38,16 @@ resource "aws_vpn_connection" "krastin-vpc1-vpnconn1" {
   depends_on = ["aws_vpn_gateway.krastin-vpc1-vpngw1"]
 }
 
+resource "aws_vpn_connection_route" "krastin-vpc1-vpnroute-10-150" {
+  destination_cidr_block = "${var.remote_vpn_subnet}"
+  vpn_connection_id      = "${aws_vpn_connection.krastin-vpc1-vpnconn1.id}"
+}
+
+output "vpn_configuration" {
+    value = "${aws_vpn_connection.krastin-vpc1-vpnconn1.customer_gateway_configuration}"
+    description = "XML configuration of VPN tunnels"
+    sensitive = true
+}
 /*
 resource "aws_vpc_peering_connection" "peering_vpc1_vpc2" {
   #peer_owner_id = "${var.peer_owner_id}"
