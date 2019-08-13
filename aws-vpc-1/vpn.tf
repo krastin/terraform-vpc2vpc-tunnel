@@ -35,6 +35,9 @@ resource "aws_vpn_connection" "krastin-vpc1-vpnconn1" {
       Name = "krastin-vpc1-vpnconn1"
   }
 
+  tunnel1_inside_cidr   = "${var.client_tunnel1_inside_cidr}"
+  tunnel2_inside_cidr   = "${var.client_tunnel2_inside_cidr}"
+
   depends_on = ["aws_vpn_gateway.krastin-vpc1-vpngw1"]
 }
 
