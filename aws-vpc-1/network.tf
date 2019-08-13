@@ -68,3 +68,9 @@ resource "aws_subnet" "krastin-vpc1-subnet-10-100" {
     Name = "krastin-vpc1-subnet-10-100"
   }
 }
+
+output "vpc_id" {
+  value = "${aws_vpc.krastin-vpc1.id}"
+  description = "ID of this VPC"
+  sensitive = false
+}
