@@ -24,6 +24,11 @@ resource "aws_default_route_table" "krastin-vpc1-rt1" {
     gateway_id = "${aws_internet_gateway.krastin-vpc1-gw1.id}"
   }
 
+  route {
+    cidr_block = "169.254.0.0/16"
+    gateway_id = "${aws_vpn_gateway.krastin-vpc1-vpngw1.id}"
+  }
+
   tags = {
     Name = "krastin-vpc1-rt1"
   }

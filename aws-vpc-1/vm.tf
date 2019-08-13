@@ -1,17 +1,3 @@
-/*
-resource "aws_eip" "krastin-vpc1-eip1" {
-  vpc = true
-
-  instance                  = "${aws_instance.krastin-vpc1-vm1.id}"
-  associate_with_private_ip = "10.100.0.10"
-#  depends_on                = ["aws_internet_gateway.krastin-vpc1-gw1"]
-
-  tags = {
-      Name = "krastin-vpc1-eip1"
-  }
-}
-*/
-
 resource "aws_instance" "krastin-vpc1-vm1" {
   ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"

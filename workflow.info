@@ -1,0 +1,3 @@
+client/terraform init
+output to aws-vpc-1/variables
+aws-vpc1/terraform init
