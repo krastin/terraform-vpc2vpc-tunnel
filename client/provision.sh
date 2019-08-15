@@ -2,8 +2,11 @@
 #
 # $CLIENT_PUB_IP = client's public ip
 # $SERVER_PUB_IP = server's public ip
-# $SERVER_SUBNET
-# $CLIENT_SUBNET
+# $CLIENT_SUBNET = client's subnet
+# $SERVER_SUBNET = server's subnet
+# $CLIENT_TUN_IP = client's tunnel service ip
+# $SERVER_TUN_IP = server's tunnel service ip
+# $PSK1 = preshared key for tunnel1
 
 sudo apt install strongswan ifupdown
 
@@ -39,7 +42,7 @@ conn Tunnel1
 EOF
 
 cat <<EOF >> /etc/ipsec.secrets
-$CLIENT_PUB_IP $SERVER_PUB_IP : PSK "Ty25qNi2y6jzNU4qrYGRCBQz2tteUCPn"
+$CLIENT_PUB_IP $SERVER_PUB_IP : PSK "$PSK1"
 EOF
 
 sudo ip link add Tunnel1 type vti local `hostname -i` remote $SERVER_PUB_IP key 100

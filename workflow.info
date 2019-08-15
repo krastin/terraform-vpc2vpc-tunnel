@@ -1,3 +1,10 @@
 client/terraform init
 output to aws-vpc-1/variables
 aws-vpc1/terraform init
+
+
+
+edit vpc-2/tfvars
+apply
+edit vpc-1/tfvars
+apply
