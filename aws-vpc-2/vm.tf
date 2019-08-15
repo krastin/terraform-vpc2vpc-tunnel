@@ -30,6 +30,11 @@ resource "aws_network_interface" "krastin-vpc2-nwint1" {
   depends_on = ["aws_security_group.krastin-vpc2-sg-permit", "aws_subnet.krastin-vpc2-subnet-10-200"]
 }
 
+output "vm_ssh_target" {
+    value = "${aws_instance.krastin-vpc2-vm1.public_ip}"
+    description = "IP to SSH into for VM1"
+    sensitive = false
+}
 data "aws_ami" "ubuntu" {
     most_recent = true
 

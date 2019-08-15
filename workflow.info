@@ -1,0 +1,28 @@
+BACKSET SETUP
+CLIENT VPN:
+client/terraform apply
+output IP to aws-vpc-1/variables
+ssh to client ip
+paste provision.sh to /tmp/provision
+sudo apt install -y strongswan ifupdown
+echo "alias ping=\"ping -I '10.150.0.10'\"" >> ~/.bashrc
+echo "alias ping=\"ping -I '10.150.0.10'\"" >> ~ubuntu/.bashrc
+
+STAGE SETUP
+aws-vpc1/terraform apply
+aws-vpc2/terraform apply
+
+STAGE VPN
+aws-vpc1/terraform output vpn_configuration | less
+edit provision with vpc1 output
+show vpn configuration text file
+run provision
+PRIVATE SCREEN aws-vpc1/terraform apply for propagation route if needed?
+ping
+
+STAGE PEERING
+edit vpc-2/tfvars
+apply
+
+edit vpc-1/tfvars
+apply
