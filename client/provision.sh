@@ -8,7 +8,15 @@
 # $SERVER_TUN_IP = server's tunnel service ip
 # $PSK1 = preshared key for tunnel1
 
-sudo apt install strongswan ifupdown
+CLIENT_PUB_IP=`dig +short myip.opendns.com @resolver1.opendns.com`
+SERVER_PUB_IP=""
+CLIENT_SUBNET=""
+SERVER_SUBNET=""
+CLIENT_TUN_IP=""
+SERVER_TUN_IP=""
+PSK1=""
+
+sudo apt install -y strongswan ifupdown
 
 sudo sysctl -w net.ipv4.ip_forward=1
 sudo sysctl -w net.ipv4.conf.Tunnel1.rp_filter=2 #This value allows the Linux kernel to handle asymmetric routing

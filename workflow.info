@@ -1,6 +1,7 @@
-client/terraform init
+client/terraform apply
 output to aws-vpc-1/variables
-aws-vpc1/terraform init
+
+aws-vpc1/terraform apply
 
 
 

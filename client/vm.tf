@@ -28,11 +28,6 @@ resource "aws_instance" "krastin-vpc-client-vm1" {
     user = "ubuntu"
   }
 
-  provisioner "file" {
-    source      = "provision.sh"
-    destination = "/tmp/provision.sh"
-  }
-
   key_name = "krastin-key1"
 
   tags = {
