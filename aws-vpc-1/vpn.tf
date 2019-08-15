@@ -11,10 +11,16 @@ resource "aws_vpn_gateway" "krastin-vpc1-vpngw1" {
   }
 }
 
-resource "aws_vpn_gateway_route_propagation" "krastin-vpc1-rp1" {
+/*resource "aws_vpn_gateway_route_propagation" "krastin-vpc1-rp1" {
   vpn_gateway_id = "${aws_vpn_gateway.krastin-vpc1-vpngw1.id}"
   route_table_id = "${aws_vpc.krastin-vpc1.default_route_table_id}"
   depends_on = ["aws_vpn_gateway.krastin-vpc1-vpngw1", "aws_vpc.krastin-vpc1"]
+}*/
+
+resource "aws_route" "vpn_added_route" {
+  route_table_id         = "${aws_vpc.krastin-vpc1.main_route_table_id}"
+  destination_cidr_block = "${var.remote_vpn_subnet}"
+  gateway_id             = "${aws_vpn_gateway.krastin-vpc1-vpngw1.id}"
 }
 
 resource "aws_customer_gateway" "krastin-vpc1-cgw1" {

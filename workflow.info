@@ -4,9 +4,9 @@ client/terraform apply
 output IP to aws-vpc-1/variables
 ssh to client ip
 paste provision.sh to /tmp/provision
-sudo apt install -y strongswan ifupdown
 echo "alias ping=\"ping -I '10.150.0.10'\"" >> ~/.bashrc
 echo "alias ping=\"ping -I '10.150.0.10'\"" >> ~ubuntu/.bashrc
+sudo apt install -y strongswan ifupdown
 
 STAGE SETUP
 aws-vpc1/terraform apply
