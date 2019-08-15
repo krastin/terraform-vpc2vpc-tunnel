@@ -1,11 +1,23 @@
+BACKSET SETUP
+
+CLIENT VPN:
 client/terraform apply
+alias ping="ping -I '10.150.0.10'"
 output to aws-vpc-1/variables
 
 aws-vpc1/terraform apply
 
+aws-vpc2/terraform apply
+
+
+
+edit provision with vpc1 output
+run provision
 
 
 edit vpc-2/tfvars
 apply
+
 edit vpc-1/tfvars
 apply
+

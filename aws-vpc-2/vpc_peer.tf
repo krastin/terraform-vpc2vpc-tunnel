@@ -22,6 +22,7 @@ resource "aws_vpc_peering_connection" "krastin-req1" {
 }
 
 resource "aws_route" "vpc_peering_route" {
+  count = "${var.vpc_peering}"
   route_table_id         = "${aws_vpc.krastin-vpc2.default_route_table_id}"
   destination_cidr_block = "${var.vpc_peering_route}"
   gateway_id             = "${aws_vpc_peering_connection.krastin-req1.id}"
