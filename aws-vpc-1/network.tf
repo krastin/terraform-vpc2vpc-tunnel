@@ -16,7 +16,18 @@ resource "aws_internet_gateway" "krastin-vpc1-gw1" {
   }
 }
 
-resource "aws_default_route_table" "krastin-vpc1-rt1" {
+resource "aws_route" "default_route" {
+  route_table_id         = "${aws_vpc.krastin-vpc1.main_route_table_id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = "${aws_internet_gateway.krastin-vpc1-gw1.id}"
+}
+resource "aws_route" "vpn_service_route" {
+  route_table_id         = "${aws_vpc.krastin-vpc1.main_route_table_id}"
+  destination_cidr_block = "169.254.0.0/16"
+  gateway_id             = "${aws_vpn_gateway.krastin-vpc1-vpngw1.id}"
+}
+
+/*resource "aws_default_route_table" "krastin-vpc1-rt1" {
   default_route_table_id = "${aws_vpc.krastin-vpc1.default_route_table_id}"
 
   route {
@@ -32,7 +43,7 @@ resource "aws_default_route_table" "krastin-vpc1-rt1" {
   tags = {
     Name = "krastin-vpc1-rt1"
   }
-}
+}*/
 
 resource "aws_security_group" "krastin-vpc1-sg-permit" {
   name = "krastin-vpc1-sg-permit"
