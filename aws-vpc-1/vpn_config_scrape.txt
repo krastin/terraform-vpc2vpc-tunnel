@@ -1,0 +1,6 @@
+
+terraform output vpn_configuration | xq '.vpn_connection.ipsec_tunnel[0].vpn_gateway.tunnel_outside_address.ip_address' vpncfg.xm # VPN public IP
+terraform output vpn_configuration | xq '.vpn_connection.ipsec_tunnel[0].vpn_gateway.tunnel_inside_address.ip_address' vpncfg.xml # VPN private IP
+
+terraform output vpn_configuration | xq '.vpn_connection.ipsec_tunnel[0].customer_gateway.tunnel_outside_address.ip_address' vpncfg.xml # client public IP
+terraform output vpn_configuration | xq '.vpn_connection.ipsec_tunnel[0].customer_gateway.tunnel_inside_address.ip_address' vpncfg.xml # client private IP
